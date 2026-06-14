@@ -40,6 +40,10 @@ func (h *MatchHandler) EditMatch(c *gin.Context) {
 	}
 
 	match, err := h.svc.EditMatch(c.Request.Context(), id, req.HomeGoals, req.AwayGoals)
+	if errors.Is(err, service.ErrMatchNotFound) {
+		respondError(c, http.StatusNotFound, err)
+		return
+	}
 	if err != nil {
 		respondError(c, http.StatusInternalServerError, err)
 		return

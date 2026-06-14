@@ -1,7 +1,14 @@
 package main
 
 import (
+	"context"
+	"errors"
 	"log"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"github.com/joho/godotenv"
 
@@ -40,11 +47,31 @@ func main() {
 	// Handler layer
 	leagueHandler := handler.NewLeagueHandler(leagueSvc)
 	matchHandler := handler.NewMatchHandler(leagueSvc)
+	healthHandler := handler.NewHealthHandler(database)
 
-	r := router.New(leagueHandler, matchHandler)
-
-	log.Printf("server starting on :%s", cfg.Port)
-	if err := r.Run(":" + cfg.Port); err != nil {
-		log.Fatalf("server: %v", err)
+	srv := &http.Server{
+		Addr:    ":" + cfg.Port,
+		Handler: router.New(leagueHandler, matchHandler, healthHandler),
 	}
+
+	// Start server in background so we can listen for shutdown signals.
+	go func() {
+		log.Printf("server starting on :%s", cfg.Port)
+		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			log.Fatalf("server: %v", err)
+		}
+	}()
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+
+	log.Println("shutting down server...")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Fatalf("server forced to shutdown: %v", err)
+	}
+	log.Println("server stopped")
 }

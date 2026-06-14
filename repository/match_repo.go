@@ -97,12 +97,19 @@ func (r *matchRepo) MarkPlayed(ctx context.Context, id, homeGoals, awayGoals int
 }
 
 func (r *matchRepo) UpdateResult(ctx context.Context, id, homeGoals, awayGoals int) (*models.Match, error) {
-	_, err := r.db.ExecContext(ctx,
+	result, err := r.db.ExecContext(ctx,
 		`UPDATE matches SET home_goals = $1, away_goals = $2, played = TRUE WHERE id = $3`,
 		homeGoals, awayGoals, id,
 	)
 	if err != nil {
 		return nil, fmt.Errorf("matchRepo.UpdateResult %d: %w", id, err)
+	}
+	n, err := result.RowsAffected()
+	if err != nil {
+		return nil, fmt.Errorf("matchRepo.UpdateResult rows affected: %w", err)
+	}
+	if n == 0 {
+		return nil, fmt.Errorf("matchRepo.UpdateResult %d: %w", id, sql.ErrNoRows)
 	}
 
 	m, err := scanMatch(r.db.QueryRowContext(ctx,

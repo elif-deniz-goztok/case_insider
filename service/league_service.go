@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"fmt"
 	"sort"
@@ -18,6 +19,9 @@ var ErrPredictionTooEarly = errors.New("predictions are available from week 4 on
 
 // ErrLeagueFinished is returned when trying to simulate a week after all matches are played.
 var ErrLeagueFinished = errors.New("all weeks have been played")
+
+// ErrMatchNotFound is returned when a match ID does not exist.
+var ErrMatchNotFound = errors.New("match not found")
 
 type leagueService struct {
 	teams   repository.TeamRepository
@@ -165,6 +169,9 @@ func (s *leagueService) GetPredictions(ctx context.Context) ([]models.Prediction
 
 func (s *leagueService) EditMatch(ctx context.Context, id, homeGoals, awayGoals int) (*models.Match, error) {
 	m, err := s.matches.UpdateResult(ctx, id, homeGoals, awayGoals)
+	if errors.Is(err, sql.ErrNoRows) {
+		return nil, ErrMatchNotFound
+	}
 	if err != nil {
 		return nil, fmt.Errorf("EditMatch %d: %w", id, err)
 	}

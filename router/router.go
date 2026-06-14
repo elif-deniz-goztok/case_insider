@@ -8,8 +8,10 @@ import (
 )
 
 // New returns a configured Gin engine with all API routes registered.
-func New(league *handler.LeagueHandler, match *handler.MatchHandler) *gin.Engine {
+func New(league *handler.LeagueHandler, match *handler.MatchHandler, health *handler.HealthHandler) *gin.Engine {
 	r := gin.Default()
+
+	r.GET("/health", health.Check)
 
 	api := r.Group("/api")
 	{
