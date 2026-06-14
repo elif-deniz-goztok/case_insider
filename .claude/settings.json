@@ -1,0 +1,25 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd /Users/deniz/Desktop/case_insider && case \"$(echo $CLAUDE_TOOL_INPUT | python3 -c 'import sys,json; d=json.load(sys.stdin); print(d.get(\"file_path\",\"\"))' 2>/dev/null)\" in *.go) go build ./... 2>&1 | head -20 ;; esac"
+          }
+        ]
+      }
+    ]
+  },
+  "mcpServers": {
+    "postgres": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-postgres",
+        "postgresql://deniz@localhost:5432/case_insider"
+      ]
+    }
+  }
+}
