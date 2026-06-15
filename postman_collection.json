@@ -1,0 +1,178 @@
+{
+  "info": {
+    "name": "case_insider API",
+    "_postman_id": "case-insider-api",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Football league simulation API. Run requests in order to walk through a full simulation."
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "League",
+      "item": [
+        {
+          "name": "1. Get League Table",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/league/table",
+              "host": ["{{base_url}}"],
+              "path": ["api", "league", "table"]
+            },
+            "description": "Returns current standings sorted by points, goal difference, and goals scored."
+          }
+        },
+        {
+          "name": "2. Get All Weeks",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/league/weeks",
+              "host": ["{{base_url}}"],
+              "path": ["api", "league", "weeks"]
+            },
+            "description": "Returns all weeks and their match results."
+          }
+        },
+        {
+          "name": "3. Get Week 1",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/league/weeks/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "league", "weeks", "1"]
+            },
+            "description": "Returns match results for a specific week (1–6)."
+          }
+        },
+        {
+          "name": "4. Simulate Next Week (x4 → reach week 4)",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{base_url}}/api/league/next-week",
+              "host": ["{{base_url}}"],
+              "path": ["api", "league", "next-week"]
+            },
+            "description": "Simulates the next unplayed week. Run this 4 times to reach week 4 and unlock predictions."
+          }
+        },
+        {
+          "name": "5. Get Championship Predictions (week 4+)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/league/predictions",
+              "host": ["{{base_url}}"],
+              "path": ["api", "league", "predictions"]
+            },
+            "description": "Returns championship probability per team via Monte Carlo simulation. Only available after week 4."
+          }
+        },
+        {
+          "name": "6. Simulate Next Week (x2 → finish season)",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{base_url}}/api/league/next-week",
+              "host": ["{{base_url}}"],
+              "path": ["api", "league", "next-week"]
+            },
+            "description": "Run twice more to complete weeks 5 and 6."
+          }
+        },
+        {
+          "name": "7. Get Final League Table",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/league/table",
+              "host": ["{{base_url}}"],
+              "path": ["api", "league", "table"]
+            },
+            "description": "Final standings after all 6 weeks."
+          }
+        },
+        {
+          "name": "9. Reset League",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{base_url}}/api/league/reset",
+              "host": ["{{base_url}}"],
+              "path": ["api", "league", "reset"]
+            },
+            "description": "Clears all match results and resets the league to its initial state."
+          }
+        },
+        {
+          "name": "10. Play All Remaining Weeks",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{base_url}}/api/league/play-all",
+              "host": ["{{base_url}}"],
+              "path": ["api", "league", "play-all"]
+            },
+            "description": "Simulates all remaining unplayed weeks at once and returns results grouped by week."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Matches",
+      "item": [
+        {
+          "name": "8. Edit Match Result",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/matches/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "matches", "1"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"home_goals\": 3,\n  \"away_goals\": 0\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Overrides the result of a played match and recalculates standings. Replace :id with any match ID."
+          }
+        }
+      ]
+    }
+  ]
+}

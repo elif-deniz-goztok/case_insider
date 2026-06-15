@@ -2,6 +2,8 @@
 
 Football league simulation REST API built with Go, Gin, and PostgreSQL.
 
+**Live API:** https://caseinsider-production.up.railway.app
+
 Four teams play a double round-robin (6 weeks). The API simulates match results week by week, maintains a live league table, and predicts championship probabilities from week 4 onwards.
 
 ## Setup
