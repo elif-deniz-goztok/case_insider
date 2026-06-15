@@ -7,8 +7,7 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/elif-deniz-goztok/case_insider/models"
-	"github.com/elif-deniz-goztok/case_insider/repository"
+	"github.com/elif-deniz-goztok/case_insider/internal/models"
 )
 
 const totalWeeks = 6
@@ -24,17 +23,17 @@ var ErrLeagueFinished = errors.New("all weeks have been played")
 var ErrMatchNotFound = errors.New("match not found")
 
 type leagueService struct {
-	teams   repository.TeamRepository
-	matches repository.MatchRepository
+	teams   TeamRepository
+	matches MatchRepository
 	sim     SimulationService
 }
 
 // NewLeagueService wires the league service with its dependencies.
 func NewLeagueService(
-	teams repository.TeamRepository,
-	matches repository.MatchRepository,
+	teams TeamRepository,
+	matches MatchRepository,
 	sim SimulationService,
-) LeagueService {
+) *leagueService {
 	return &leagueService{teams: teams, matches: matches, sim: sim}
 }
 

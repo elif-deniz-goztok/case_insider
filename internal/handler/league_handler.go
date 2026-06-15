@@ -8,16 +8,16 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/elif-deniz-goztok/case_insider/service"
+	"github.com/elif-deniz-goztok/case_insider/internal/service"
 )
 
 // LeagueHandler exposes league simulation endpoints.
 type LeagueHandler struct {
-	svc service.LeagueService
+	svc LeagueService
 }
 
 // NewLeagueHandler creates a LeagueHandler with the provided service.
-func NewLeagueHandler(svc service.LeagueService) *LeagueHandler {
+func NewLeagueHandler(svc LeagueService) *LeagueHandler {
 	return &LeagueHandler{svc: svc}
 }
 

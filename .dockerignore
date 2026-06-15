@@ -1,0 +1,8 @@
+.git
+.env
+.env.*
+!.env.example
+bin/
+*.pdf
+.DS_Store
+.claude/

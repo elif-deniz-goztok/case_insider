@@ -1,19 +1,24 @@
 package handler
 
 import (
-	"database/sql"
+	"context"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
+// pinger is satisfied by *sql.DB and any value with a PingContext method.
+type pinger interface {
+	PingContext(ctx context.Context) error
+}
+
 // HealthHandler exposes a liveness/readiness endpoint.
 type HealthHandler struct {
-	db *sql.DB
+	db pinger
 }
 
 // NewHealthHandler creates a HealthHandler that pings the given database.
-func NewHealthHandler(db *sql.DB) *HealthHandler {
+func NewHealthHandler(db pinger) *HealthHandler {
 	return &HealthHandler{db: db}
 }
 

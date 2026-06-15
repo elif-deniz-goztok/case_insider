@@ -12,16 +12,22 @@ Football league simulation backend — Insider Development Intern Hiring Day Tas
 - Lint: `golangci-lint run`
 
 ## Architecture
-GoLang REST API (no frontend). Testable via Postman.
+GoLang REST API (no frontend). Testable via Postman. Follows golang-standards/project-layout.
 
 ```
 .
-├── main.go              # Entry point, router setup, dependency wiring
-├── models/              # Pure data structs (Team, Match, League, Week)
-├── repository/          # DB access — always behind an interface
-├── service/             # Business logic — always behind an interface
-├── handler/             # HTTP handlers, input validation only
-└── db/                  # SQL schema and seed queries
+├── cmd/
+│   └── api/
+│       └── main.go          # Entry point, router setup, dependency wiring
+├── internal/
+│   ├── config/              # Environment-based configuration loading
+│   ├── db/                  # Database connection (postgres.go)
+│   ├── models/              # Pure data structs (Team, Match, Standing, Prediction)
+│   ├── repository/          # DB access — always behind an interface
+│   ├── service/             # Business logic — always behind an interface
+│   ├── handler/             # HTTP handlers, input validation only
+│   └── router/              # Gin route wiring
+└── db/                      # SQL schema and seed queries
 ```
 
 ### Layer Rules

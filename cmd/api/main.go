@@ -12,12 +12,12 @@ import (
 
 	"github.com/joho/godotenv"
 
-	"github.com/elif-deniz-goztok/case_insider/config"
-	"github.com/elif-deniz-goztok/case_insider/db"
-	"github.com/elif-deniz-goztok/case_insider/handler"
-	"github.com/elif-deniz-goztok/case_insider/repository"
-	"github.com/elif-deniz-goztok/case_insider/router"
-	"github.com/elif-deniz-goztok/case_insider/service"
+	"github.com/elif-deniz-goztok/case_insider/internal/config"
+	"github.com/elif-deniz-goztok/case_insider/internal/db"
+	"github.com/elif-deniz-goztok/case_insider/internal/handler"
+	"github.com/elif-deniz-goztok/case_insider/internal/repository"
+	"github.com/elif-deniz-goztok/case_insider/internal/router"
+	"github.com/elif-deniz-goztok/case_insider/internal/service"
 )
 
 func main() {

@@ -5,15 +5,15 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/elif-deniz-goztok/case_insider/models"
+	"github.com/elif-deniz-goztok/case_insider/internal/models"
 )
 
 type matchRepo struct {
 	db *sql.DB
 }
 
-// NewMatchRepository creates a PostgreSQL-backed MatchRepository.
-func NewMatchRepository(db *sql.DB) MatchRepository {
+// NewMatchRepository creates a PostgreSQL-backed match repository.
+func NewMatchRepository(db *sql.DB) *matchRepo {
 	return &matchRepo{db: db}
 }
 

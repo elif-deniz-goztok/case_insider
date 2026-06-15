@@ -4,7 +4,7 @@ package router
 import (
 	"github.com/gin-gonic/gin"
 
-	"github.com/elif-deniz-goztok/case_insider/handler"
+	"github.com/elif-deniz-goztok/case_insider/internal/handler"
 )
 
 // New returns a configured Gin engine with all API routes registered.

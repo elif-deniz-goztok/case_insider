@@ -36,7 +36,7 @@ cp .env.example .env
 ### 4. Run
 
 ```bash
-go run main.go
+go run ./cmd/api
 # Server starts on http://localhost:8080
 ```
 
@@ -92,18 +92,22 @@ All responses follow this envelope:
 
 ## Architecture
 
-```
-main.go          → wires all layers, starts server
-config/          → environment variable loading
-db/              → PostgreSQL connection, schema.sql, seed.sql
-models/          → Team, Match, Standing, Prediction structs
-repository/      → interfaces + PostgreSQL implementations (TeamRepository, MatchRepository)
-service/         → interfaces + business logic (LeagueService, SimulationService)
-handler/         → Gin HTTP handlers (input validation only)
-router/          → route registration
-```
+Follows [golang-standards/project-layout](https://github.com/golang-standards/project-layout). Dependencies flow strictly downward: `handler` → `service` → `repository`. Every layer boundary is an interface defined in the consumer package.
 
-Dependencies flow strictly downward: handler → service → repository. Every layer boundary is an interface.
+```
+cmd/api/main.go          → entry point, dependency wiring, graceful shutdown
+internal/
+  config/                → environment variable loading
+  db/                    → PostgreSQL connection
+  models/                → Team, Match, Standing, Prediction structs
+  repository/            → PostgreSQL implementations (TeamRepo, MatchRepo)
+  service/               → business logic + repository/simulation interfaces
+  handler/               → Gin HTTP handlers, input validation, service interfaces
+  router/                → route registration
+db/
+  schema.sql             → table definitions
+  seed.sql               → team data
+```
 
 ## Simulation model
 

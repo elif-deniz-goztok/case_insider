@@ -1,19 +1,19 @@
-// Package repository defines data access interfaces and their PostgreSQL implementations.
-package repository
+// Package service contains business logic for the league simulation.
+package service
 
 import (
 	"context"
 
-	"github.com/elif-deniz-goztok/case_insider/models"
+	"github.com/elif-deniz-goztok/case_insider/internal/models"
 )
 
-// TeamRepository defines read operations for team data.
+// TeamRepository defines the team data access operations that the service requires.
 type TeamRepository interface {
 	GetAll(ctx context.Context) ([]models.Team, error)
 	GetByID(ctx context.Context, id int) (*models.Team, error)
 }
 
-// MatchRepository defines all data access operations for matches.
+// MatchRepository defines the match data access operations that the service requires.
 type MatchRepository interface {
 	GetAll(ctx context.Context) ([]models.Match, error)
 	GetByWeek(ctx context.Context, week int) ([]models.Match, error)
@@ -26,4 +26,17 @@ type MatchRepository interface {
 	UpdateResult(ctx context.Context, id, homeGoals, awayGoals int) (*models.Match, error)
 	// Reset clears all match results, reverting the league to its initial state.
 	Reset(ctx context.Context) error
+}
+
+// SimulationService handles match outcome generation and championship forecasting.
+type SimulationService interface {
+	// SimulateMatch returns a randomized score influenced by each team's strength.
+	SimulateMatch(home, away models.Team) (homeGoals, awayGoals int)
+	// PredictChampionship runs Monte Carlo simulations and returns championship probabilities.
+	PredictChampionship(
+		teams []models.Team,
+		standings []models.Standing,
+		remaining []models.Match,
+		iterations int,
+	) []models.Prediction
 }

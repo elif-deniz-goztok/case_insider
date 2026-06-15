@@ -3,10 +3,10 @@ DB_NAME ?= case_insider
 .PHONY: run build test fmt vet migrate seed reset-db
 
 run:
-	go run main.go
+	go run ./cmd/api
 
 build:
-	go build -o bin/case_insider .
+	go build -o bin/case_insider ./cmd/api
 
 test:
 	go test ./...

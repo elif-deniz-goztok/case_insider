@@ -4,7 +4,7 @@ import (
 	"math"
 	"math/rand"
 
-	"github.com/elif-deniz-goztok/case_insider/models"
+	"github.com/elif-deniz-goztok/case_insider/internal/models"
 )
 
 const (
@@ -15,8 +15,8 @@ const (
 
 type simulationService struct{}
 
-// NewSimulationService creates a SimulationService using a Poisson-based match model.
-func NewSimulationService() SimulationService {
+// NewSimulationService creates a simulation service using a Poisson-based match model.
+func NewSimulationService() *simulationService {
 	return &simulationService{}
 }
 

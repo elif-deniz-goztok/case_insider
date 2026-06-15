@@ -5,15 +5,15 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/elif-deniz-goztok/case_insider/models"
+	"github.com/elif-deniz-goztok/case_insider/internal/models"
 )
 
 type teamRepo struct {
 	db *sql.DB
 }
 
-// NewTeamRepository creates a PostgreSQL-backed TeamRepository.
-func NewTeamRepository(db *sql.DB) TeamRepository {
+// NewTeamRepository creates a PostgreSQL-backed team repository.
+func NewTeamRepository(db *sql.DB) *teamRepo {
 	return &teamRepo{db: db}
 }
 

@@ -7,16 +7,16 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/elif-deniz-goztok/case_insider/service"
+	"github.com/elif-deniz-goztok/case_insider/internal/service"
 )
 
 // MatchHandler exposes match-level endpoints.
 type MatchHandler struct {
-	svc service.LeagueService
+	svc MatchEditor
 }
 
 // NewMatchHandler creates a MatchHandler with the provided service.
-func NewMatchHandler(svc service.LeagueService) *MatchHandler {
+func NewMatchHandler(svc MatchEditor) *MatchHandler {
 	return &MatchHandler{svc: svc}
 }
 
