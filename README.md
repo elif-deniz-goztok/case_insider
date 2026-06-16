@@ -42,6 +42,10 @@ go run ./cmd/api
 # Server starts on http://localhost:8080
 ```
 
+### 5. Test with Postman
+
+Import `postman_collection.json` from the project root into Postman. The collection targets the live Railway URL by default — change the `base_url` variable to `http://localhost:8080` for local testing.
+
 ---
 
 ## API Reference
@@ -50,6 +54,12 @@ All responses follow this envelope:
 ```json
 { "data": <payload>, "error": "<message or omitted>" }
 ```
+
+### Health
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/health` | Liveness check — returns 200 if server and DB are reachable |
 
 ### League
 
@@ -79,16 +89,18 @@ All responses follow this envelope:
 
 ---
 
-## Example Postman flow
+## Postman collection
+
+Import `postman_collection.json` into Postman. Requests are pre-ordered to walk through a full simulation:
 
 1. `GET /api/league/table` — confirm all teams start at 0 points
 2. `POST /api/league/next-week` × 4 — simulate weeks 1–4
 3. `GET /api/league/predictions` — view championship probabilities
 4. `POST /api/league/next-week` × 2 — complete the season
 5. `GET /api/league/table` — final standings
-6. `POST /api/league/reset` — start over
-7. `POST /api/league/play-all` — simulate all 6 weeks in one call
-8. `PUT /api/matches/1` `{"home_goals":5,"away_goals":0}` — override a result
+6. `PUT /api/matches/1` `{"home_goals":5,"away_goals":0}` — override a result
+7. `POST /api/league/reset` — start over
+8. `POST /api/league/play-all` — simulate all 6 weeks in one call
 
 ---
 
@@ -108,7 +120,7 @@ internal/
   router/                → route registration
 db/
   schema.sql             → table definitions
-  seed.sql               → team data
+  seed.sql               → team data and full 6-week fixture list
 ```
 
 ## Simulation model
