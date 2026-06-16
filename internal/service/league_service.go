@@ -10,7 +10,8 @@ import (
 	"github.com/elif-deniz-goztok/case_insider/internal/models"
 )
 
-const totalWeeks = 6
+// TotalWeeks is the number of weeks in the league season (double round-robin, 4 teams).
+const TotalWeeks = 6
 const predictionMinWeek = 4
 
 // ErrPredictionTooEarly is returned when predictions are requested before week 4.
@@ -75,7 +76,7 @@ func (s *leagueService) SimulateNextWeek(ctx context.Context) ([]models.Match, e
 		return nil, fmt.Errorf("SimulateNextWeek: %w", err)
 	}
 	next := current + 1
-	if next > totalWeeks {
+	if next > TotalWeeks {
 		return nil, ErrLeagueFinished
 	}
 
@@ -101,12 +102,12 @@ func (s *leagueService) SimulateAll(ctx context.Context) (map[int][]models.Match
 	if err != nil {
 		return nil, fmt.Errorf("SimulateAll: %w", err)
 	}
-	if current >= totalWeeks {
+	if current >= TotalWeeks {
 		return nil, ErrLeagueFinished
 	}
 
 	results := make(map[int][]models.Match)
-	for week := current + 1; week <= totalWeeks; week++ {
+	for week := current + 1; week <= TotalWeeks; week++ {
 		played, err := s.simulateWeek(ctx, week)
 		if err != nil {
 			return nil, err

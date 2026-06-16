@@ -1,10 +1,47 @@
 package service
 
 import (
+	"context"
+	"database/sql"
+	"errors"
 	"testing"
 
 	"github.com/elif-deniz-goztok/case_insider/internal/models"
 )
+
+// --- mock repository implementations ---
+
+type mockTeamRepo struct {
+	teams []models.Team
+}
+
+func (r *mockTeamRepo) GetAll(_ context.Context) ([]models.Team, error) { return r.teams, nil }
+func (r *mockTeamRepo) GetByID(_ context.Context, _ int) (*models.Team, error) {
+	return nil, nil
+}
+
+type mockMatchRepo struct {
+	currentWeek  int
+	allMatches   []models.Match
+	weekMatches  []models.Match
+	updateErr    error
+	updateResult *models.Match
+}
+
+func (m *mockMatchRepo) GetAll(_ context.Context) ([]models.Match, error) {
+	return m.allMatches, nil
+}
+func (m *mockMatchRepo) GetByWeek(_ context.Context, _ int) ([]models.Match, error) {
+	return m.weekMatches, nil
+}
+func (m *mockMatchRepo) GetCurrentWeek(_ context.Context) (int, error) {
+	return m.currentWeek, nil
+}
+func (m *mockMatchRepo) MarkPlayed(_ context.Context, _, _, _ int) error { return nil }
+func (m *mockMatchRepo) UpdateResult(_ context.Context, _, _, _ int) (*models.Match, error) {
+	return m.updateResult, m.updateErr
+}
+func (m *mockMatchRepo) Reset(_ context.Context) error { return nil }
 
 func TestComputeStandings(t *testing.T) {
 	ptr := func(n int) *int { return &n }
@@ -79,5 +116,37 @@ func TestComputeStandings(t *testing.T) {
 				}
 			}
 		})
+	}
+}
+
+func TestSimulateNextWeek_ErrLeagueFinished(t *testing.T) {
+	svc := NewLeagueService(&mockTeamRepo{}, &mockMatchRepo{currentWeek: TotalWeeks}, NewSimulationService())
+	_, err := svc.SimulateNextWeek(context.Background())
+	if !errors.Is(err, ErrLeagueFinished) {
+		t.Errorf("got %v, want ErrLeagueFinished", err)
+	}
+}
+
+func TestSimulateAll_ErrLeagueFinished(t *testing.T) {
+	svc := NewLeagueService(&mockTeamRepo{}, &mockMatchRepo{currentWeek: TotalWeeks}, NewSimulationService())
+	_, err := svc.SimulateAll(context.Background())
+	if !errors.Is(err, ErrLeagueFinished) {
+		t.Errorf("got %v, want ErrLeagueFinished", err)
+	}
+}
+
+func TestGetPredictions_ErrPredictionTooEarly(t *testing.T) {
+	svc := NewLeagueService(&mockTeamRepo{}, &mockMatchRepo{currentWeek: predictionMinWeek - 1}, NewSimulationService())
+	_, err := svc.GetPredictions(context.Background())
+	if !errors.Is(err, ErrPredictionTooEarly) {
+		t.Errorf("got %v, want ErrPredictionTooEarly", err)
+	}
+}
+
+func TestEditMatch_ErrMatchNotFound(t *testing.T) {
+	svc := NewLeagueService(&mockTeamRepo{}, &mockMatchRepo{updateErr: sql.ErrNoRows}, NewSimulationService())
+	_, err := svc.EditMatch(context.Background(), 99, 0, 0)
+	if !errors.Is(err, ErrMatchNotFound) {
+		t.Errorf("got %v, want ErrMatchNotFound", err)
 	}
 }

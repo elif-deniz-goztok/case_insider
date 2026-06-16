@@ -84,10 +84,11 @@ func poissonSample(lambda float64) int {
 }
 
 // topTeamID returns the team ID with the highest points in the given map.
+// Ties are broken by lower team ID to ensure deterministic results across iterations.
 func topTeamID(pts map[int]int) int {
 	topID, topPts := 0, -1
 	for id, p := range pts {
-		if p > topPts {
+		if p > topPts || (p == topPts && id < topID) {
 			topPts = p
 			topID = id
 		}

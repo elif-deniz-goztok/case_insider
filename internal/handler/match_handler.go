@@ -21,8 +21,8 @@ func NewMatchHandler(svc MatchEditor) *MatchHandler {
 }
 
 type editMatchRequest struct {
-	HomeGoals int `json:"home_goals" binding:"min=0"`
-	AwayGoals int `json:"away_goals" binding:"min=0"`
+	HomeGoals *int `json:"home_goals" binding:"required,min=0"`
+	AwayGoals *int `json:"away_goals" binding:"required,min=0"`
 }
 
 // EditMatch updates a match result and recalculates standings.
@@ -39,7 +39,7 @@ func (h *MatchHandler) EditMatch(c *gin.Context) {
 		return
 	}
 
-	match, err := h.svc.EditMatch(c.Request.Context(), id, req.HomeGoals, req.AwayGoals)
+	match, err := h.svc.EditMatch(c.Request.Context(), id, *req.HomeGoals, *req.AwayGoals)
 	if errors.Is(err, service.ErrMatchNotFound) {
 		respondError(c, http.StatusNotFound, err)
 		return

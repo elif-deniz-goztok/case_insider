@@ -32,7 +32,10 @@ func (r *teamRepo) GetAll(ctx context.Context) ([]models.Team, error) {
 		}
 		teams = append(teams, t)
 	}
-	return teams, rows.Err()
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("teamRepo.GetAll rows: %w", err)
+	}
+	return teams, nil
 }
 
 func (r *teamRepo) GetByID(ctx context.Context, id int) (*models.Team, error) {

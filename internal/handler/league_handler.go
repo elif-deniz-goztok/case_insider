@@ -44,7 +44,7 @@ func (h *LeagueHandler) GetAllWeeks(c *gin.Context) {
 // GetWeek returns match results for a specific week.
 func (h *LeagueHandler) GetWeek(c *gin.Context) {
 	week, err := strconv.Atoi(c.Param("week"))
-	if err != nil || week < 1 || week > 6 {
+	if err != nil || week < 1 || week > service.TotalWeeks {
 		respondError(c, http.StatusBadRequest, errors.New("week must be an integer between 1 and 6"))
 		return
 	}

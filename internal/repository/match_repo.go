@@ -51,7 +51,10 @@ func (r *matchRepo) GetAll(ctx context.Context) ([]models.Match, error) {
 		}
 		matches = append(matches, m)
 	}
-	return matches, rows.Err()
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("matchRepo.GetAll rows: %w", err)
+	}
+	return matches, nil
 }
 
 func (r *matchRepo) GetByWeek(ctx context.Context, week int) ([]models.Match, error) {
@@ -71,7 +74,10 @@ func (r *matchRepo) GetByWeek(ctx context.Context, week int) ([]models.Match, er
 		}
 		matches = append(matches, m)
 	}
-	return matches, rows.Err()
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("matchRepo.GetByWeek rows: %w", err)
+	}
+	return matches, nil
 }
 
 func (r *matchRepo) GetCurrentWeek(ctx context.Context) (int, error) {
