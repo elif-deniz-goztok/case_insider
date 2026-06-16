@@ -2,6 +2,8 @@
 package router
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 
 	"github.com/elif-deniz-goztok/case_insider/internal/handler"
@@ -11,6 +13,12 @@ import (
 func New(league *handler.LeagueHandler, match *handler.MatchHandler, health *handler.HealthHandler) *gin.Engine {
 	r := gin.Default()
 
+	r.GET("/", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"service": "case_insider",
+			"docs":    "https://github.com/elif-deniz-goztok/case_insider",
+		})
+	})
 	r.GET("/health", health.Check)
 
 	api := r.Group("/api")
