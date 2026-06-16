@@ -186,7 +186,7 @@ func (s *leagueService) Reset(ctx context.Context) error {
 }
 
 // computeStandings derives the league table from match results in memory.
-// Ordered by: Points desc → GoalDifference desc → GoalsFor desc.
+// Ordered by Premier League rules: Points → Goal Difference → Goals Scored → Away Goals Scored.
 func computeStandings(teams []models.Team, matches []models.Match) []models.Standing {
 	table := make(map[int]*models.Standing, len(teams))
 	for i := range teams {
@@ -207,6 +207,7 @@ func computeStandings(teams []models.Team, matches []models.Match) []models.Stan
 		h.GoalsAgainst += ag
 		a.GoalsFor += ag
 		a.GoalsAgainst += hg
+		a.AwayGoalsFor += ag
 
 		switch {
 		case hg > ag:
@@ -239,7 +240,10 @@ func computeStandings(teams []models.Team, matches []models.Match) []models.Stan
 		if a.GoalDifference != b.GoalDifference {
 			return a.GoalDifference > b.GoalDifference
 		}
-		return a.GoalsFor > b.GoalsFor
+		if a.GoalsFor != b.GoalsFor {
+			return a.GoalsFor > b.GoalsFor
+		}
+		return a.AwayGoalsFor > b.AwayGoalsFor
 	})
 
 	return standings

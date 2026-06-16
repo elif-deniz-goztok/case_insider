@@ -10,6 +10,7 @@ type Standing struct {
 	GoalsFor       int  `json:"goals_for"`
 	GoalsAgainst   int  `json:"goals_against"`
 	GoalDifference int  `json:"goal_difference"`
+	AwayGoalsFor   int  `json:"away_goals_for"`
 	Points         int  `json:"points"`
 }
 

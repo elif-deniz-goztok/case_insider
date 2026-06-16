@@ -95,6 +95,18 @@ func TestComputeStandings(t *testing.T) {
 			wantPoints: map[string]int{"Chelsea": 0, "Arsenal": 0},
 			wantPlayed: map[string]int{"Chelsea": 0, "Arsenal": 0},
 		},
+		{
+			name:  "away goals break tie when points, GD and goals scored are equal",
+			teams: []models.Team{chelsea, arsenal},
+			matches: []models.Match{
+				// Chelsea wins 1-0 at home → Chelsea: 3pts, GF=1, GA=0, awayGF=0
+				{HomeTeam: chelsea, AwayTeam: arsenal, HomeGoals: ptr(1), AwayGoals: ptr(0), Played: true},
+				// Arsenal wins 2-1 at home → Arsenal: 3pts, GF=2+0=2, GA=1+1=2; Chelsea scores 1 away goal
+				{HomeTeam: arsenal, AwayTeam: chelsea, HomeGoals: ptr(2), AwayGoals: ptr(1), Played: true},
+			},
+			// Both: 3pts, GD=0, GF=2 — Chelsea wins via away goals (1 vs 0)
+			wantFirst: "Chelsea",
+		},
 	}
 
 	for _, tt := range tests {
